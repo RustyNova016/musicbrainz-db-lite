@@ -1,3 +1,4 @@
+pub mod label_info;
 pub mod fetching;
 pub mod media;
 pub mod tracks;
@@ -7,7 +8,7 @@ use sqlx::SqliteConnection;
 use crate::{
     models::musicbrainz::{
         artist_credit::ArtistCredits,
-        release::{Media, Release},
+        release::{LabelInfo, Media, Release},
     },
     utils::date_utils::date_to_timestamp,
 };
@@ -62,6 +63,10 @@ impl Release {
         if let Some(values) = value.media.clone() {
             Media::save_api_response(conn, values, new_release.id).await?;
         }
+
+        if let Some(values) = value.label_info {
+            LabelInfo::save_api_response(conn, values, new_release.id).await?;
+        } 
 
         Ok(new_release)
     }
